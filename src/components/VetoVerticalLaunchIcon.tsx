@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { verticalLaunchImg } from '../assets/images';
 
 interface VetoVerticalLaunchIconProps {
   size?: number;
@@ -31,7 +32,7 @@ export const VetoVerticalLaunchIcon: React.FC<VetoVerticalLaunchIconProps> = ({
     >
       {!imageError ? (
         <img
-          src="/src/assets/images/veto_vertical_launch_3d_icon_1790361558304.jpg"
+          src={verticalLaunchImg}
           alt="VETO Photorealistic 3D Vertical Launch Interceptor Icon"
           className="w-full h-full object-cover rounded-xl transition-all duration-500 group-hover:scale-110 brightness-105"
           onError={() => setImageError(true)}

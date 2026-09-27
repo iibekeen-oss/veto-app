@@ -21,6 +21,7 @@ import { VetoVerticalLaunchIcon } from './components/VetoVerticalLaunchIcon';
 import { VetoInterceptorDesignCanvas } from './components/VetoInterceptorDesignCanvas';
 import { VetoStopHandCardLogo } from './components/VetoStopHandCardLogo';
 import { SupabaseConfigModal } from './components/SupabaseConfigModal';
+import { nutritionImg, deadliftImg } from './assets/images';
 import {
   updateStanceCountsInSupabase,
   subscribeToStanceUpdates,
@@ -54,9 +55,7 @@ export default function App() {
         videoDuration: '0:35',
         category: (item.category || 'BIOMECHANICS').toUpperCase(),
         debateTopic: item.debate_topic || 'EXERCISE TECHNIQUE',
-        image: item.video_url || (idx % 2 === 0
-          ? '/src/assets/images/veto_nutrition_debate_1790345583185.jpg'
-          : '/src/assets/images/veto_deadlift_debate_1790345549392.jpg'),
+        image: item.video_url || (idx % 2 === 0 ? nutritionImg : deadliftImg),
         proCount: item.pro_count ?? 1,
         conCount: item.con_count ?? 0,
         userStance: null,

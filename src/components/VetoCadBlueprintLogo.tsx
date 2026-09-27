@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { cadBlueprintImg } from '../assets/images';
 
 interface VetoCadBlueprintLogoProps {
   size?: number;
@@ -30,7 +31,7 @@ export const VetoCadBlueprintLogo: React.FC<VetoCadBlueprintLogoProps> = ({
     >
       {!imageFailed ? (
         <img
-          src="/src/assets/images/veto_cad_blueprint_htk_1790354902754.jpg"
+          src={cadBlueprintImg}
           alt="VETO-0 Military CAD Blueprint Interception"
           className="w-full h-full object-cover rounded-xl transition-all duration-500 group-hover:scale-108 brightness-105"
           onError={() => setImageFailed(true)}

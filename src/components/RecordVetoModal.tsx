@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { X, Flame, Video, CheckCircle, AlertCircle, Upload, Loader2, Database } from 'lucide-react';
 import { VetoPost, Stance } from '../types';
 import { insertRebuttalToSupabase, uploadRebuttalVideo } from '../lib/supabaseClient';
+import { nutritionImg, deadliftImg } from '../assets/images';
 
 interface RecordVetoModalProps {
   currentRoundsCount: number;
@@ -90,9 +91,7 @@ export const RecordVetoModal: React.FC<RecordVetoModalProps> = ({
       debateTopic: 'BENCH PRESS INTEGRITY',
       image:
         videoPreviewUrl ||
-        (newRound % 2 === 0
-          ? '/src/assets/images/veto_nutrition_debate_1790345583185.jpg'
-          : '/src/assets/images/veto_deadlift_debate_1790345549392.jpg'),
+        (newRound % 2 === 0 ? nutritionImg : deadliftImg),
       proCount: 1,
       conCount: 0,
       userStance: 'PRO',

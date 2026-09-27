@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { interceptImg } from '../assets/images';
 
 interface VetoInterceptGraphicProps {
   className?: string;
@@ -31,7 +32,7 @@ export const VetoInterceptGraphic: React.FC<VetoInterceptGraphicProps> = ({
     >
       {!imageError ? (
         <img
-          src="/src/assets/images/veto_missile_intercept_1790352543364.jpg"
+          src={interceptImg}
           alt="VETO Interceptor Missile System"
           className="w-full h-full object-cover rounded-xl"
           onError={() => setImageError(true)}

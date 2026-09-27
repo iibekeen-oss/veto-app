@@ -1,4 +1,9 @@
 import { VetoPost } from '../types';
+import {
+  benchImg,
+  deadliftImg,
+  squatImg,
+} from '../assets/images';
 
 export const INITIAL_POSTS: VetoPost[] = [
   {
@@ -12,7 +17,7 @@ export const INITIAL_POSTS: VetoPost[] = [
     videoDuration: '0:52',
     category: 'BIOMECHANICS',
     debateTopic: 'BENCH PRESS INTEGRITY',
-    image: '/src/assets/images/veto_bench_rebuttal_1790345571712.jpg',
+    image: benchImg,
     proCount: 1482,
     conCount: 914,
     userStance: null,
@@ -60,7 +65,7 @@ export const INITIAL_POSTS: VetoPost[] = [
     videoDuration: '1:08',
     category: 'KINESIOLOGY',
     debateTopic: 'BENCH PRESS INTEGRITY',
-    image: '/src/assets/images/veto_deadlift_debate_1790345549392.jpg',
+    image: deadliftImg,
     proCount: 890,
     conCount: 1720,
     userStance: null,
@@ -98,7 +103,7 @@ export const INITIAL_POSTS: VetoPost[] = [
     videoDuration: '1:24',
     category: 'SPORTS MEDICINE',
     debateTopic: 'BENCH PRESS INTEGRITY',
-    image: '/src/assets/images/veto_squat_counter_1790345562035.jpg',
+    image: squatImg,
     proCount: 2310,
     conCount: 380,
     userStance: null,

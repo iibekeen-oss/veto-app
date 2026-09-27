@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { hitToKillImg } from '../assets/images';
 
 interface VetoHitToKillRenderProps {
   size?: number;
@@ -29,7 +30,7 @@ export const VetoHitToKillRender: React.FC<VetoHitToKillRenderProps> = ({
     >
       {!imageError ? (
         <img
-          src="/src/assets/images/veto_hit_to_kill_1790354505467.jpg"
+          src={hitToKillImg}
           alt="VETO-0 Hit-to-Kill Tactical Interception"
           className="w-full h-full object-cover rounded-xl transition-all duration-500 group-hover:scale-110 brightness-105"
           onError={() => setImageError(true)}
