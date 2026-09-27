@@ -1,5 +1,22 @@
 export type Stance = 'PRO' | 'CON';
-export type AppLanguage = 'syr' | 'ar' | 'en' | 'es' | 'fr' | 'de';
+export type AppLanguage =
+  | 'syr'
+  | 'ar'
+  | 'en'
+  | 'es'
+  | 'fr'
+  | 'de'
+  | 'it'
+  | 'el'
+  | 'sv'
+  | 'no'
+  | 'da'
+  | 'ru'
+  | 'fa'
+  | 'tr'
+  | 'ko'
+  | 'zh'
+  | 'ja';
 
 export interface AuthUser {
   id: string;

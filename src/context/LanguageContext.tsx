@@ -5,6 +5,7 @@ import {
   Translations,
   getInitialLanguage,
   handleLanguageChange,
+  RTL_LANGUAGES,
   t as translateHelper,
 } from '../lib/i18n';
 
@@ -40,7 +41,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     onLanguageChange(nextLang);
   };
 
-  const isRtl = currentLang === 'syr';
+  const isRtl = RTL_LANGUAGES.includes(currentLang);
   const t = translations[currentLang] || translations.syr;
 
   return (

@@ -268,6 +268,17 @@ export default function App() {
                   <option value="es" className="bg-[#121216] text-white">Español</option>
                   <option value="fr" className="bg-[#121216] text-white">Français</option>
                   <option value="de" className="bg-[#121216] text-white">Deutsch</option>
+                  <option value="it" className="bg-[#121216] text-white">Italiano</option>
+                  <option value="el" className="bg-[#121216] text-white">Ελληνικά</option>
+                  <option value="sv" className="bg-[#121216] text-white">Svenska</option>
+                  <option value="no" className="bg-[#121216] text-white">Norsk</option>
+                  <option value="da" className="bg-[#121216] text-white">Dansk</option>
+                  <option value="ru" className="bg-[#121216] text-white">Русский</option>
+                  <option value="fa" className="bg-[#121216] text-white">فارسی</option>
+                  <option value="tr" className="bg-[#121216] text-white">Türkçe</option>
+                  <option value="ko" className="bg-[#121216] text-white">한국어</option>
+                  <option value="zh" className="bg-[#121216] text-white">中文</option>
+                  <option value="ja" className="bg-[#121216] text-white">日本語</option>
                 </select>
                 <div className="pointer-events-none absolute right-2 rtl:right-auto rtl:left-2 text-[#00FF66] text-[10px]">
                   ▼

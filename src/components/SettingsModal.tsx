@@ -25,11 +25,22 @@ export default function SettingsModal({
     { code: 'es', label: 'Español', sub: 'LTR Español' },
     { code: 'fr', label: 'Français', sub: 'LTR Français' },
     { code: 'de', label: 'Deutsch', sub: 'LTR Deutsch' },
+    { code: 'it', label: 'Italiano', sub: 'LTR Italiano' },
+    { code: 'el', label: 'Ελληνικά', sub: 'LTR Ελληνικά' },
+    { code: 'sv', label: 'Svenska', sub: 'LTR Svenska' },
+    { code: 'no', label: 'Norsk', sub: 'LTR Norsk' },
+    { code: 'da', label: 'Dansk', sub: 'LTR Dansk' },
+    { code: 'ru', label: 'Русский', sub: 'LTR Русский' },
+    { code: 'fa', label: 'فارسی', sub: 'fa / RTL' },
+    { code: 'tr', label: 'Türkçe', sub: 'LTR Türkçe' },
+    { code: 'ko', label: '한국어', sub: 'LTR 한국어' },
+    { code: 'zh', label: '中文', sub: 'LTR 中文' },
+    { code: 'ja', label: '日本語', sub: 'LTR 日本語' },
   ];
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl text-white">
+      <div className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl text-white">
         
         {/* رأس النافذة */}
         <div className="flex items-center justify-between p-4 border-b border-gray-800">
@@ -49,25 +60,28 @@ export default function SettingsModal({
           
           {/* قسم اختيار لغة التطبيق (بدون أي أعلام نهائياً) */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-gray-300 block">لغة التطبيق</label>
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-gray-300 block">لغة التطبيق</label>
+              <span className="text-[11px] text-gray-400">16 لغة مدعومة</span>
+            </div>
             
-            <div className="grid grid-cols-2 gap-2.5 max-h-56 overflow-y-auto pr-1">
+            <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1">
               {languages.map((item) => (
                 <button
                   key={item.code}
                   type="button"
                   onClick={() => onLanguageChange && onLanguageChange(item.code)}
-                  className={`p-3 rounded-xl border text-right rtl:text-right ltr:text-left transition-all flex flex-col justify-between cursor-pointer ${
+                  className={`p-2.5 rounded-xl border text-right rtl:text-right ltr:text-left transition-all flex flex-col justify-between cursor-pointer ${
                     currentLang === item.code 
-                      ? 'border-green-500 bg-green-500/10 text-white shadow-sm' 
+                      ? 'border-green-500 bg-green-500/10 text-white shadow-sm ring-1 ring-green-500/30' 
                       : 'border-gray-800 bg-gray-800/50 text-gray-400 hover:border-gray-700'
                   }`}
                 >
                   <div className="flex items-center justify-between w-full">
-                    <span className="font-bold text-sm">{item.label}</span>
-                    {currentLang === item.code && <span className="text-green-500 font-bold">✓</span>}
+                    <span className="font-bold text-xs sm:text-sm">{item.label}</span>
+                    {currentLang === item.code && <span className="text-green-500 font-bold text-xs">✓</span>}
                   </div>
-                  <span className="text-[11px] text-gray-500 mt-1.5">{item.sub}</span>
+                  <span className="text-[10px] text-gray-500 mt-1">{item.sub}</span>
                 </button>
               ))}
             </div>
