@@ -329,3 +329,28 @@ export async function handleSignUp(email: string, password: string) {
   }
 }
 
+/**
+ * دالة تسجيل الدخول عبر Supabase Auth
+ */
+export async function handleLogin(email: string, password: string, onUserAuthenticated?: (user: any) => void) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password,
+  });
+  if (error) {
+    if (typeof window !== 'undefined' && window.alert) {
+      alert("خطأ في تسجيل الدخول: " + error.message);
+    }
+    return { success: false, error };
+  } else {
+    if (typeof window !== 'undefined' && window.alert) {
+      alert("مرحباً بك مجدداً!");
+    }
+    // هنا يتم تحديث حالة المستخدم في الواجهة
+    if (onUserAuthenticated) {
+      onUserAuthenticated(data?.user || data?.session?.user);
+    }
+    return { success: true, data };
+  }
+}
+

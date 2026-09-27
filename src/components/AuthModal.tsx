@@ -81,20 +81,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         }, 800);
       } else {
         // Login mode
-        try {
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email: email.trim(),
-            password: password.trim(),
-          });
-          if (error && !error.message.includes('fetch')) {
-            // Supabase auth log
-          }
-        } catch (e) {
-          // Fallback
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password: password.trim(),
+        });
+
+        if (error) {
+          setErrorMsg("خطأ في تسجيل الدخول: " + error.message);
+          return;
+        } else {
+          setSuccessMsg("مرحباً بك مجدداً!");
         }
 
         const loggedInUser: AuthUser = {
-          id: `u-${Date.now()}`,
+          id: data?.user?.id || `u-${Date.now()}`,
           email: email.trim(),
           name: email.split('@')[0],
           role: 'Athlete',
@@ -105,7 +105,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           saveAuthUser(loggedInUser);
         }
 
-        setSuccessMsg(t.welcomeBack);
         setTimeout(() => {
           onAuthSuccess(loggedInUser);
           onClose();
