@@ -4,8 +4,8 @@
  */
 
 import React, { useState } from 'react';
-import { PlusCircle, Flame, Filter, Sparkles, Layers } from 'lucide-react';
-import { VetoPost, Stance, VetoComment } from './types';
+import { PlusCircle, Flame, Filter, Sparkles, Layers, Settings, User, LogIn, LogOut, Languages } from 'lucide-react';
+import { VetoPost, Stance, VetoComment, AuthUser } from './types';
 import { INITIAL_POSTS } from './data/mockData';
 import { VetoPostCard } from './components/VetoPostCard';
 import { CommentsDrawer } from './components/CommentsDrawer';
@@ -21,6 +21,10 @@ import { VetoVerticalLaunchIcon } from './components/VetoVerticalLaunchIcon';
 import { VetoInterceptorDesignCanvas } from './components/VetoInterceptorDesignCanvas';
 import { VetoStopHandCardLogo } from './components/VetoStopHandCardLogo';
 import { SupabaseConfigModal } from './components/SupabaseConfigModal';
+import { AuthModal } from './components/AuthModal';
+import { SettingsModal } from './components/SettingsModal';
+import { useLanguage } from './context/LanguageContext';
+import { getSavedAuthUser, saveAuthUser } from './lib/i18n';
 import { nutritionImg, deadliftImg } from './assets/images';
 import {
   updateStanceCountsInSupabase,
@@ -31,6 +35,7 @@ import {
 import { Database, Radio } from 'lucide-react';
 
 export default function App() {
+  const { language, setLanguage, toggleLanguage, t, isRtl } = useLanguage();
   const [posts, setPosts] = useState<VetoPost[]>(INITIAL_POSTS);
   const [activeFilter, setActiveFilter] = useState<'ALL' | 'VETO_0' | 'REBUTTALS'>('ALL');
   const [activeCommentPostId, setActiveCommentPostId] = useState<string | null>(null);
@@ -39,6 +44,22 @@ export default function App() {
   const [isCodeViewerOpen, setIsCodeViewerOpen] = useState(false);
   const [isSupabaseModalOpen, setIsSupabaseModalOpen] = useState(false);
   const [supabaseConnected, setSupabaseConnected] = useState(true);
+
+  // Auth & Settings state
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(getSavedAuthUser);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('login');
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+  const handleOpenAuth = (mode: 'login' | 'signup' = 'login') => {
+    setAuthModalMode(mode);
+    setIsAuthModalOpen(true);
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    saveAuthUser(null);
+  };
 
   // Refresh feed from Supabase
   const refreshFeed = async () => {
@@ -209,46 +230,86 @@ export default function App() {
     >
       <div className="w-full flex flex-col bg-[#121212] min-h-full">
         {/* App Top Bar */}
-        <header className="sticky top-0 z-20 bg-[#121212]/95 backdrop-blur-md border-b border-[#222226] px-4 py-3">
-          <div className="flex items-center justify-between">
+        <header className="sticky top-0 z-20 bg-[#121212]/95 backdrop-blur-md border-b border-[#222226] px-3.5 py-3">
+          <div className="flex items-center justify-between gap-2">
             {/* Brand Logo: Glowing Red Stop Hand / Veto Card Vector Icon */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
               <div
-                className="relative group cursor-pointer"
-                title="Glowing Red Stop Hand / Veto Card: Click to configure Supabase"
-                onClick={() => setIsSupabaseModalOpen(true)}
+                className="relative group cursor-pointer shrink-0"
+                title={isRtl ? 'بطاقة الفيتو الحاسمة: اضغط للإعدادات' : 'Glowing Red Stop Hand / Veto Card: Click to configure'}
+                onClick={() => setIsSettingsModalOpen(true)}
               >
-                <VetoStopHandCardLogo size={46} showText />
+                <VetoStopHandCardLogo size={42} showText />
               </div>
-              <div>
-                <h1 className="text-white font-black text-lg tracking-wider font-mono flex items-center gap-1.5 leading-none">
-                  VETO
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF3333] animate-pulse" />
+              <div className="min-w-0">
+                <h1 className="text-white font-black text-base sm:text-lg tracking-wider font-mono flex items-center gap-1.5 leading-none">
+                  <span>{t.appName}</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF3333] animate-pulse shrink-0" />
                 </h1>
-                <p className="text-[10px] text-[#757575] font-mono tracking-tight">
-                  ABSOLUTE VETO CARD
+                <p className="text-[9px] sm:text-[10px] text-[#757575] font-mono tracking-tight truncate">
+                  {t.appSubtitle}
                 </p>
               </div>
             </div>
 
-            {/* Quick Actions & Supabase Realtime Pill */}
-            <div className="flex items-center gap-2">
+            {/* Quick Actions: Language Switcher, Auth Button, Settings Button, Rebuttal Button */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              {/* Language Switcher Pill (🇸🇦 / 🇺🇸) */}
               <button
-                onClick={() => setIsSupabaseModalOpen(true)}
-                className="flex items-center gap-1 py-1.5 px-2.5 rounded-lg bg-[#1a1b22] hover:bg-[#252834] text-[#3ECF8E] font-mono font-bold text-[11px] border border-[#3ECF8E]/30 transition-all cursor-pointer shadow-[0_0_10px_rgba(62,207,142,0.15)]"
-                title="Supabase Real-Time Stance Synchronization"
+                type="button"
+                onClick={toggleLanguage}
+                className="flex items-center gap-1 py-1.5 px-2 rounded-lg bg-[#1a1b20] hover:bg-[#25262e] border border-[#2a2b34] text-white text-[11px] font-mono font-bold transition-all cursor-pointer shadow-sm"
+                title={t.language}
               >
-                <Database className="w-3.5 h-3.5 text-[#3ECF8E]" />
-                <span className="hidden sm:inline">SUPABASE</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] animate-ping" />
+                <Languages className="w-3.5 h-3.5 text-[#00FF66]" />
+                <span className="uppercase">{language === 'ar' ? '🇸🇦 ع' : '🇺🇸 EN'}</span>
               </button>
 
+              {/* User Profile / Login Button */}
+              {currentUser ? (
+                <button
+                  type="button"
+                  onClick={() => setIsSettingsModalOpen(true)}
+                  className="flex items-center gap-1.5 py-1 px-2 rounded-lg bg-[#1f1618] hover:bg-[#2b1c20] border border-[#FF3333]/30 text-white font-mono text-xs transition-all cursor-pointer"
+                  title={`${t.account}: ${currentUser.name}`}
+                >
+                  <span className="w-5 h-5 rounded-md bg-[#FF3333] text-black font-black text-[10px] flex items-center justify-center">
+                    {currentUser.avatarInitial || currentUser.name[0]}
+                  </span>
+                  <span className="hidden sm:inline font-bold text-[11px] truncate max-w-[80px]">
+                    {currentUser.name}
+                  </span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handleOpenAuth('login')}
+                  className="flex items-center gap-1 py-1.5 px-2.5 rounded-lg bg-[#142319] hover:bg-[#1a3022] border border-[#00FF66]/30 text-[#00FF66] font-mono font-bold text-[11px] transition-all cursor-pointer shadow-[0_0_10px_rgba(0,255,102,0.15)]"
+                  title={t.login}
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span className="hidden xs:inline">{t.login}</span>
+                </button>
+              )}
+
+              {/* Settings Modal Button */}
+              <button
+                type="button"
+                onClick={() => setIsSettingsModalOpen(true)}
+                className="p-1.5 rounded-lg bg-[#1a1b20] hover:bg-[#25262e] text-[#8e8e93] hover:text-white border border-[#2a2b34] transition-all cursor-pointer"
+                title={t.settings}
+              >
+                <Settings className="w-3.5 h-3.5" />
+              </button>
+
+              {/* Record Rebuttal Button */}
               <button
                 onClick={() => setIsRecordModalOpen(true)}
-                className="flex items-center gap-1.5 py-1.5 px-3 rounded-lg bg-[#FF3333] hover:bg-[#FF3333]/90 text-white font-mono font-bold text-xs shadow-[0_0_12px_rgba(255,51,51,0.4)] transition-all cursor-pointer"
+                className="flex items-center gap-1 py-1.5 px-2.5 sm:px-3 rounded-lg bg-[#FF3333] hover:bg-[#FF3333]/90 text-white font-mono font-bold text-[11px] sm:text-xs shadow-[0_0_12px_rgba(255,51,51,0.4)] transition-all cursor-pointer shrink-0"
               >
                 <Flame className="w-3.5 h-3.5 fill-current" />
-                <span>+ REBUTTAL</span>
+                <span className="hidden sm:inline">+ {t.recordVetoBtn}</span>
+                <span className="sm:hidden">+</span>
               </button>
             </div>
           </div>
@@ -263,7 +324,7 @@ export default function App() {
                   : 'text-[#888888] hover:text-white'
               }`}
             >
-              ALL ROUNDS ({posts.length})
+              {t.allFilter} ({posts.length})
             </button>
             <button
               onClick={() => setActiveFilter('VETO_0')}
@@ -274,7 +335,7 @@ export default function App() {
               }`}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#00FF66]" />
-              VETO 0 (ORIGIN)
+              {t.veto0Filter}
             </button>
             <button
               onClick={() => setActiveFilter('REBUTTALS')}
@@ -285,7 +346,7 @@ export default function App() {
               }`}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#FF3333]" />
-              REBUTTALS
+              {t.rebuttalsFilter}
             </button>
           </div>
         </header>
@@ -385,6 +446,27 @@ export default function App() {
           isOpen={isSupabaseModalOpen}
           onClose={() => setIsSupabaseModalOpen(false)}
           isConnected={supabaseConnected}
+        />
+
+        {/* Authentication Modal (Login / Signup) */}
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          currentUser={currentUser}
+          initialMode={authModalMode}
+          onAuthSuccess={(user) => {
+            setCurrentUser(user);
+          }}
+        />
+
+        {/* Settings Modal (Language & Profile) */}
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          currentUser={currentUser}
+          onOpenAuth={(mode) => handleOpenAuth(mode || 'login')}
+          onLogout={handleLogout}
+          onOpenSupabaseModal={() => setIsSupabaseModalOpen(true)}
         />
       </div>
     </AndroidPhoneFrame>

@@ -1,4 +1,13 @@
 export type Stance = 'PRO' | 'CON';
+export type AppLanguage = 'ar' | 'en';
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  role?: string;
+  avatarInitial?: string;
+}
 
 export interface VetoComment {
   id: string;

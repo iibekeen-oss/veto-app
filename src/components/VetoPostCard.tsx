@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Play, Pause, Volume2, VolumeX, MessageSquare, Share2, Flame, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { VetoPost, Stance } from '../types';
 import { StanceCounters } from './StanceCounters';
+import { useLanguage } from '../context/LanguageContext';
 
 interface VetoPostCardProps {
   post: VetoPost;
@@ -16,6 +17,7 @@ export const VetoPostCard: React.FC<VetoPostCardProps> = ({
   onOpenComments,
   onChallengeRebuttal,
 }) => {
+  const { t, isRtl } = useLanguage();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [playProgress, setPlayProgress] = useState(0);
@@ -106,21 +108,21 @@ export const VetoPostCard: React.FC<VetoPostCardProps> = ({
         <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-black/60 pointer-events-none" />
 
         {/* Top-Left: "VETO" Round Indicator Badge */}
-        <div className="absolute top-3 left-3 z-10">
+        <div className={`absolute top-3 ${isRtl ? 'right-3' : 'left-3'} z-10`}>
           <div
             className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-xs font-mono font-extrabold tracking-wide backdrop-blur-md shadow-lg ${badgeColorClass}`}
           >
             <span className={`w-2 h-2 rounded-full animate-pulse ${dotColorClass}`} />
             <span>
               {isOriginal
-                ? 'VETO 0 · ORIGINAL THESIS'
-                : `VETO ${post.round} · REBUTTAL`}
+                ? (isRtl ? 'فيتو 0 · الأطروحة الأصلية' : 'VETO 0 · ORIGINAL THESIS')
+                : (isRtl ? `فيتو ${post.round} · رد تكتيكي` : `VETO ${post.round} · REBUTTAL`)}
             </span>
           </div>
         </div>
 
         {/* Top-Right: Video Duration & Mute Controls */}
-        <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
+        <div className={`absolute top-3 ${isRtl ? 'left-3' : 'right-3'} z-10 flex items-center gap-2`}>
           <button
             onClick={() => setIsMuted(!isMuted)}
             className="p-1.5 rounded-md bg-black/60 backdrop-blur-md text-white hover:bg-black/80 transition-colors border border-white/10"
@@ -197,11 +199,11 @@ export const VetoPostCard: React.FC<VetoPostCardProps> = ({
       <div className="flex items-center justify-between pt-3 border-t border-[#2c2c2e] text-xs">
         <button
           onClick={() => onOpenComments(post)}
-          className="flex items-center gap-2 py-1.5 px-3 rounded-lg text-[#b0b0b0] hover:text-white hover:bg-[#252528] transition-all cursor-pointer"
+          className="flex items-center gap-2 py-1.5 px-3 rounded-lg text-[#b0b0b0] hover:text-white hover:bg-[#252528] transition-all cursor-pointer font-sans"
         >
           <MessageSquare className="w-4 h-4 text-[#8e8e93]" />
           <span className="font-medium">
-            {post.comments.length} Audience Replies
+            {post.comments.length} {isRtl ? 'رد رياضي' : 'Audience Replies'}
           </span>
         </button>
 
@@ -212,7 +214,7 @@ export const VetoPostCard: React.FC<VetoPostCardProps> = ({
               className="flex items-center gap-1.5 py-1.5 px-3 rounded-lg bg-[#252528] text-white hover:bg-[#333338] border border-[#3e3e44] transition-all cursor-pointer font-bold text-[11px] font-mono tracking-wider text-[#FF3333]"
             >
               <Flame className="w-3.5 h-3.5 text-[#FF3333]" />
-              <span>REBUT VETO</span>
+              <span>{isRtl ? 'رد فيتو' : 'REBUT VETO'}</span>
             </button>
           )}
 

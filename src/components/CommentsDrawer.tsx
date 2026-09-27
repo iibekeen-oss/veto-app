@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, ThumbsUp, MessageSquare, Filter } from 'lucide-react';
 import { VetoPost, VetoComment, Stance } from '../types';
 import { GlowCommentInput } from './GlowCommentInput';
+import { useLanguage } from '../context/LanguageContext';
 
 interface CommentsDrawerProps {
   post: VetoPost;
@@ -16,6 +17,7 @@ export const CommentsDrawer: React.FC<CommentsDrawerProps> = ({
   onAddComment,
   onToggleLikeComment,
 }) => {
+  const { t, isRtl } = useLanguage();
   const [filterStance, setFilterStance] = useState<'ALL' | 'PRO' | 'CON'>('ALL');
 
   const filteredComments = post.comments.filter((c) => {
@@ -45,8 +47,8 @@ export const CommentsDrawer: React.FC<CommentsDrawerProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-white font-bold text-sm tracking-tight">
-                  AUDIENCE DEBATE ARENA
+                <h3 className="text-white font-bold text-sm tracking-tight font-mono">
+                  {t.commentsTitle}
                 </h3>
                 <span
                   className={`text-[10px] font-mono font-extrabold px-1.5 py-0.5 rounded border ${
@@ -88,7 +90,7 @@ export const CommentsDrawer: React.FC<CommentsDrawerProps> = ({
                   : 'text-[#888888] hover:text-white'
               }`}
             >
-              ALL ({post.comments.length})
+              {t.allFilter} ({post.comments.length})
             </button>
             <button
               onClick={() => setFilterStance('PRO')}
