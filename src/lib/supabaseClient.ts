@@ -1,32 +1,49 @@
 import { createClient, RealtimeChannel } from '@supabase/supabase-js';
 
-// Supabase Project Credentials
-export const SUPABASE_URL = 'https://dieindvfdqpoywloccad.supabase.co';
+// Storage keys
+const SUPABASE_URL_STORAGE_KEY = 'veto_supabase_project_url';
+const SUPABASE_KEY_STORAGE_KEY = 'veto_supabase_anon_key';
 
-// Local storage key for custom user-pasted key
-const SUPABASE_STORAGE_KEY = 'veto_supabase_anon_key';
+// Default project configuration (يمكن استبدالهما عبر واجهة الإعدادات أو المتغيرات)
+export const DEFAULT_SUPABASE_URL = 'https://dieindvfdqpoywloccad.supabase.co';
+export const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.placeholder';
 
-// Default / initial anon key (can be replaced in UI settings or via prompt)
-export const DEFAULT_SUPABASE_ANON_KEY =
-  (typeof window !== 'undefined' && localStorage.getItem(SUPABASE_STORAGE_KEY)) ||
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.placeholder';
+export function getSavedSupabaseUrl(): string {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(SUPABASE_URL_STORAGE_KEY) || DEFAULT_SUPABASE_URL;
+  }
+  return DEFAULT_SUPABASE_URL;
+}
 
 export function getSavedSupabaseKey(): string {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem(SUPABASE_STORAGE_KEY) || '';
+    return localStorage.getItem(SUPABASE_KEY_STORAGE_KEY) || DEFAULT_SUPABASE_ANON_KEY;
   }
-  return '';
+  return DEFAULT_SUPABASE_ANON_KEY;
+}
+
+// Supabase Project Credentials
+export let SUPABASE_URL = getSavedSupabaseUrl();
+export let SUPABASE_ANON_KEY = getSavedSupabaseKey();
+
+// Global Supabase client instance as requested:
+// export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+export let supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+export function configureSupabase(url: string, anonKey: string) {
+  SUPABASE_URL = url.trim();
+  SUPABASE_ANON_KEY = anonKey.trim();
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(SUPABASE_URL_STORAGE_KEY, SUPABASE_URL);
+    localStorage.setItem(SUPABASE_KEY_STORAGE_KEY, SUPABASE_ANON_KEY);
+  }
+  supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  return supabase;
 }
 
 export function saveSupabaseKey(key: string) {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem(SUPABASE_STORAGE_KEY, key.trim());
-    supabase = createClient(SUPABASE_URL, key.trim());
-  }
+  configureSupabase(SUPABASE_URL, key);
 }
-
-// Global Supabase client instance
-export let supabase = createClient(SUPABASE_URL, DEFAULT_SUPABASE_ANON_KEY);
 
 export interface SupabasePost {
   id: string;
