@@ -1,48 +1,59 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { AppLanguage } from '../types';
-import { translations, Translations, getInitialLanguage, changeLanguage } from '../lib/i18n';
+import {
+  translations,
+  Translations,
+  getInitialLanguage,
+  handleLanguageChange,
+  t as translateHelper,
+} from '../lib/i18n';
 
 interface LanguageContextType {
   language: AppLanguage;
   currentLang: AppLanguage;
   setLanguage: (lang: AppLanguage) => void;
   changeLanguage: (lang: AppLanguage) => void;
+  handleLanguageChange: (lang: AppLanguage) => void;
   toggleLanguage: () => void;
   t: Translations;
+  translate: (key: string, lang?: string) => string;
   isRtl: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<AppLanguage>(getInitialLanguage);
+  const [currentLang, setCurrentLang] = useState<AppLanguage>(getInitialLanguage);
+
+  // عند اختيار المستخدم للغة جديدة:
+  const onLanguageChange = (newLang: AppLanguage) => {
+    setCurrentLang(newLang);
+    handleLanguageChange(newLang);
+  };
 
   useEffect(() => {
-    changeLanguage(language);
-  }, [language]);
-
-  const handleSetLanguage = (lang: AppLanguage) => {
-    setLanguageState(lang);
-    changeLanguage(lang);
-  };
+    handleLanguageChange(currentLang);
+  }, [currentLang]);
 
   const toggleLanguage = () => {
-    const nextLang = (language === 'syr' || language === 'ar') ? 'en' : 'syr';
-    handleSetLanguage(nextLang);
+    const nextLang = currentLang === 'syr' ? 'en' : 'syr';
+    onLanguageChange(nextLang);
   };
 
-  const isRtl = language === 'syr' || language === 'ar';
-  const t = translations[language] || translations.syr;
+  const isRtl = currentLang === 'syr';
+  const t = translations[currentLang] || translations.syr;
 
   return (
     <LanguageContext.Provider
       value={{
-        language,
-        currentLang: language,
-        setLanguage: handleSetLanguage,
-        changeLanguage: handleSetLanguage,
+        language: currentLang,
+        currentLang,
+        setLanguage: onLanguageChange,
+        changeLanguage: onLanguageChange,
+        handleLanguageChange: onLanguageChange,
         toggleLanguage,
         t,
+        translate: (key: string, lang?: string) => translateHelper(key, lang || currentLang),
         isRtl,
       }}
     >

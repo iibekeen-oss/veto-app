@@ -295,20 +295,29 @@ export let currentLang: AppLanguage = (typeof window !== 'undefined'
   ? ((localStorage.getItem('app_lang') || localStorage.getItem('veto_app_language') || 'syr') as AppLanguage)
   : 'syr');
 
-// Helper functions
-export function changeLanguage(lang: AppLanguage) {
-  currentLang = lang;
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('app_lang', lang);
-    localStorage.setItem('veto_app_language', lang);
-    updateUI();
-  }
+// دالة لجلب النص المترجم بناءً على اللغة الحالية
+export function t(key: string, lang: string = currentLang): string {
+  const chosenLang = lang || currentLang;
+  return (translations[chosenLang] as any)?.[key] || (translations['en'] as any)?.[key] || key;
 }
 
-export function t(key: string): string {
-  const activeDict = translations[currentLang] || translations.syr;
-  return (activeDict as any)[key] || (translations.en as any)[key] || key;
-}
+// عند اختيار المستخدم للغة جديدة:
+export const handleLanguageChange = (newLang: AppLanguage | string) => {
+  currentLang = newLang as AppLanguage;
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('app_lang', newLang);
+    localStorage.setItem('veto_app_language', newLang);
+    
+    // ضبط اتجاه الصفحة تلقائياً (السريانية يمين لليسار والبقية ليمين)
+    document.documentElement.dir = newLang === 'syr' ? 'rtl' : 'ltr';
+    document.documentElement.lang = newLang === 'syr' ? 'ar-SY' : newLang;
+    
+    updateUI();
+  }
+};
+
+// التوافق مع استدعاء changeLanguage القديم
+export const changeLanguage = handleLanguageChange;
 
 // تحديث النصوص في الواجهة
 export function updateUI() {
@@ -322,13 +331,12 @@ export function updateUI() {
     document.querySelectorAll('[data-i18n]').forEach((element) => {
       const key = element.getAttribute('data-i18n');
       if (key) {
-        (element as HTMLElement).innerText = t(key);
+        (element as HTMLElement).innerText = t(key, currentLang);
       }
     });
 
-    // ضبط اتجاه الصفحة: syr و ar من اليمين لليسار، وبقية اللغات من اليسار لليمين
-    const isRtl = currentLang === 'syr' || currentLang === 'ar';
-    document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+    // ضبط اتجاه الصفحة تلقائياً (السريانية يمين لليسار والبقية ليمين)
+    document.documentElement.dir = currentLang === 'syr' ? 'rtl' : 'ltr';
     document.documentElement.lang = currentLang === 'syr' ? 'ar-SY' : currentLang;
   }
 }
@@ -344,7 +352,7 @@ export function getInitialLanguage(): AppLanguage {
 }
 
 export function saveLanguage(lang: AppLanguage): void {
-  changeLanguage(lang);
+  handleLanguageChange(lang);
 }
 
 export function getSavedAuthUser() {
@@ -374,8 +382,9 @@ export function saveAuthUser(user: any) {
 // Global browser script registration
 if (typeof window !== 'undefined') {
   (window as any).translations = translations;
-  (window as any).changeLanguage = changeLanguage;
   (window as any).t = t;
+  (window as any).handleLanguageChange = handleLanguageChange;
+  (window as any).changeLanguage = handleLanguageChange;
   (window as any).updateUI = updateUI;
   (window as any).currentLang = currentLang;
 
