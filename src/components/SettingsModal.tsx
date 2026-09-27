@@ -78,12 +78,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
 
             <div className="grid grid-cols-2 gap-2.5">
-              {/* Arabic Option */}
+              {/* Arabic / Syrian Option */}
               <button
                 type="button"
-                onClick={() => setLanguage('ar')}
+                onClick={() => setLanguage('syr')}
                 className={`p-3 rounded-xl border text-right transition-all flex items-center justify-between cursor-pointer ${
-                  language === 'ar'
+                  language === 'syr' || language === 'ar'
                     ? 'bg-[#1a231d] border-[#00FF66] shadow-[0_0_12px_rgba(0,255,102,0.2)]'
                     : 'bg-[#111114] border-[#222228] hover:border-[#33333d]'
                 }`}
@@ -92,10 +92,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <span className="text-xl">🇸🇦</span>
                   <div>
                     <p className="text-xs font-bold text-white font-sans">العربية</p>
-                    <p className="text-[10px] text-[#70707a] font-mono">RTL Arabic</p>
+                    <p className="text-[10px] text-[#70707a] font-mono">syr / RTL</p>
                   </div>
                 </div>
-                {language === 'ar' && <Check className="w-4 h-4 text-[#00FF66]" />}
+                {(language === 'syr' || language === 'ar') && <Check className="w-4 h-4 text-[#00FF66]" />}
               </button>
 
               {/* English Option */}

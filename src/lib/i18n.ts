@@ -46,9 +46,9 @@ export interface Translations {
   codeInspector: string;
 }
 
-export const DICTIONARY: Record<AppLanguage, Translations> = {
-  ar: {
-    // User requested dictionary
+// النصوص الافتراضية والترجمات كما حددها المستخدم
+export const translations: Record<'syr' | 'en' | 'ar', Translations> = {
+  syr: {
     login: 'تسجيل الدخول',
     signup: 'إنشاء حساب جديد',
     email: 'البريد الإلكتروني',
@@ -75,7 +75,51 @@ export const DICTIONARY: Record<AppLanguage, Translations> = {
     rememberMe: 'تذكرني على هذا الجهاز',
     demoLogin: 'دخول سريع بحساب تجريبي',
     guestUser: 'رياضي ضيف',
-    account: 'الحساب الشخصي',
+    account: 'الملف الشخصي',
+    close: 'إغلاق',
+    supabaseSettings: 'إعدادات قاعدة بيانات سوبابيس',
+    switchLanguageNotice: 'تم تغيير لغة التطبيق إلى العربية بنجاح',
+    welcomeBack: 'مرحباً بك مجدداً في VETO!',
+    accountCreated: 'تم إنشاء حسابك الجديد بنجاح!',
+    loggedOutMsg: 'تم تسجيل الخروج بنجاح',
+    inputRequired: 'يرجى إدخال البريد الإلكتروني وكلمة المرور',
+    round: 'الجولة',
+    stanceBreakdown: 'مؤشر حسم النقاش',
+    interceptionActive: 'اعتراض تكتيكي نشط',
+    totalVotes: 'إجمالي الأصوات',
+    verifiedAthlete: 'رياضي موثق',
+    fullScreenFeed: 'عرض ملء الشاشة',
+    phoneMockup: 'محاكي الهاتف',
+    codeInspector: 'فاحص كود كوتلن',
+  },
+  ar: {
+    login: 'تسجيل الدخول',
+    signup: 'إنشاء حساب جديد',
+    email: 'البريد الإلكتروني',
+    password: 'كلمة المرور',
+    settings: 'الإعدادات',
+    language: 'لغة التطبيق',
+    logout: 'تسجيل الخروج',
+    profile: 'الملف الشخصي',
+
+    // UI translations
+    appName: 'فيتو',
+    appSubtitle: 'بطاقة الفيتو الحاسمة للنقاش الرياضي',
+    allFilter: 'الكل',
+    veto0Filter: 'فيتو-0 التأسيسي',
+    rebuttalsFilter: 'الردود التكتيكية',
+    recordVetoBtn: 'سجل رد فيتو',
+    proStance: 'مع (PRO)',
+    conStance: 'ضد (CON)',
+    commentsTitle: 'غرفة النقاش الرياضي',
+    addCommentPlaceholder: 'أضف دليلك العلمي أو الرياضي...',
+    sendComment: 'نشر التعليق',
+    cancel: 'إلغاء',
+    confirm: 'تأكيد',
+    rememberMe: 'تذكرني على هذا الجهاز',
+    demoLogin: 'دخول سريع بحساب تجريبي',
+    guestUser: 'رياضي ضيف',
+    account: 'الملف الشخصي',
     close: 'إغلاق',
     supabaseSettings: 'إعدادات قاعدة بيانات سوبابيس',
     switchLanguageNotice: 'تم تغيير لغة التطبيق إلى العربية بنجاح',
@@ -93,7 +137,6 @@ export const DICTIONARY: Record<AppLanguage, Translations> = {
     codeInspector: 'فاحص كود كوتلن',
   },
   en: {
-    // English exact translations requested by user
     login: 'Login',
     signup: 'Sign Up',
     email: 'Email',
@@ -120,7 +163,7 @@ export const DICTIONARY: Record<AppLanguage, Translations> = {
     rememberMe: 'Remember me on this device',
     demoLogin: 'Quick Demo Athlete Login',
     guestUser: 'Guest Athlete',
-    account: 'User Profile',
+    account: 'Profile',
     close: 'Close',
     supabaseSettings: 'Supabase Real-Time Settings',
     switchLanguageNotice: 'App language switched to English',
@@ -139,26 +182,61 @@ export const DICTIONARY: Record<AppLanguage, Translations> = {
   },
 };
 
-export const LANGUAGE_STORAGE_KEY = 'veto_app_language';
+// Aliases for compatibility
+export const DICTIONARY = translations;
+
+export const LANGUAGE_STORAGE_KEY = 'app_lang';
 export const AUTH_USER_STORAGE_KEY = 'veto_auth_user';
+
+// Current language initialization as specified by user
+export let currentLang: AppLanguage = (typeof window !== 'undefined'
+  ? ((localStorage.getItem('app_lang') || localStorage.getItem('veto_app_language') || 'syr') as AppLanguage)
+  : 'syr');
+
+// Helper functions according to user snippet
+export function changeLanguage(lang: AppLanguage) {
+  currentLang = lang;
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('app_lang', lang);
+    localStorage.setItem('veto_app_language', lang);
+    updateUI();
+  }
+}
+
+export function t(key: string): string {
+  const activeDict = translations[currentLang] || translations.syr;
+  return (activeDict as any)[key] || (translations.en as any)[key] || key;
+}
+
+// تحديث النصوص في الواجهة
+export function updateUI() {
+  if (typeof document !== 'undefined') {
+    document.querySelectorAll('[data-i18n]').forEach((element) => {
+      const key = element.getAttribute('data-i18n');
+      if (key) {
+        (element as HTMLElement).innerText = t(key);
+      }
+    });
+
+    // ضبط اتجاه الصفحة حسب اللغة (السريانية/العربية من اليمين لليسار والعنجليزية من اليسار لليمين)
+    const isRtl = currentLang === 'syr' || currentLang === 'ar';
+    document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+    document.documentElement.lang = currentLang === 'syr' ? 'ar-SY' : currentLang;
+  }
+}
 
 export function getInitialLanguage(): AppLanguage {
   if (typeof window !== 'undefined') {
-    const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY) as AppLanguage | null;
-    if (saved === 'ar' || saved === 'en') {
+    const saved = (localStorage.getItem('app_lang') || localStorage.getItem('veto_app_language')) as AppLanguage | null;
+    if (saved === 'syr' || saved === 'ar' || saved === 'en') {
       return saved;
     }
   }
-  // Default to Arabic as requested by user
-  return 'ar';
+  return 'syr';
 }
 
 export function saveLanguage(lang: AppLanguage): void {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  }
+  changeLanguage(lang);
 }
 
 export function getSavedAuthUser() {
@@ -182,5 +260,22 @@ export function saveAuthUser(user: any) {
     } else {
       localStorage.removeItem(AUTH_USER_STORAGE_KEY);
     }
+  }
+}
+
+// Global browser script registration
+if (typeof window !== 'undefined') {
+  (window as any).translations = translations;
+  (window as any).changeLanguage = changeLanguage;
+  (window as any).t = t;
+  (window as any).updateUI = updateUI;
+  (window as any).currentLang = currentLang;
+
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', () => {
+      updateUI();
+    });
+  } else {
+    updateUI();
   }
 }

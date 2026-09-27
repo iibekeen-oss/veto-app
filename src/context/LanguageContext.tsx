@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { AppLanguage } from '../types';
-import { DICTIONARY, Translations, getInitialLanguage, saveLanguage } from '../lib/i18n';
+import { translations, Translations, getInitialLanguage, changeLanguage } from '../lib/i18n';
 
 interface LanguageContextType {
   language: AppLanguage;
+  currentLang: AppLanguage;
   setLanguage: (lang: AppLanguage) => void;
+  changeLanguage: (lang: AppLanguage) => void;
   toggleLanguage: () => void;
   t: Translations;
   isRtl: boolean;
@@ -16,33 +18,35 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [language, setLanguageState] = useState<AppLanguage>(getInitialLanguage);
 
   useEffect(() => {
-    saveLanguage(language);
+    changeLanguage(language);
   }, [language]);
 
-  const setLanguage = (lang: AppLanguage) => {
+  const handleSetLanguage = (lang: AppLanguage) => {
     setLanguageState(lang);
-    saveLanguage(lang);
+    changeLanguage(lang);
   };
 
   const toggleLanguage = () => {
-    const nextLang = language === 'ar' ? 'en' : 'ar';
-    setLanguage(nextLang);
+    const nextLang = (language === 'syr' || language === 'ar') ? 'en' : 'syr';
+    handleSetLanguage(nextLang);
   };
 
-  const t = DICTIONARY[language];
-  const isRtl = language === 'ar';
+  const isRtl = language === 'syr' || language === 'ar';
+  const t = translations[language] || translations.syr;
 
   return (
     <LanguageContext.Provider
       value={{
         language,
-        setLanguage,
+        currentLang: language,
+        setLanguage: handleSetLanguage,
+        changeLanguage: handleSetLanguage,
         toggleLanguage,
         t,
         isRtl,
       }}
     >
-      <div dir={isRtl ? 'rtl' : 'ltr'} className={isRtl ? 'font-sans' : 'font-sans'}>
+      <div dir={isRtl ? 'rtl' : 'ltr'} className="w-full h-full">
         {children}
       </div>
     </LanguageContext.Provider>

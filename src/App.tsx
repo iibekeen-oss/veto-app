@@ -262,7 +262,7 @@ export default function App() {
                 title={t.language}
               >
                 <Languages className="w-3.5 h-3.5 text-[#00FF66]" />
-                <span className="uppercase">{language === 'ar' ? '🇸🇦 ع' : '🇺🇸 EN'}</span>
+                <span className="uppercase">{(language === 'syr' || language === 'ar') ? '🇸🇦 ع' : '🇺🇸 EN'}</span>
               </button>
 
               {/* User Profile / Login Button */}
