@@ -31,6 +31,7 @@ import {
   subscribeToStanceUpdates,
   fetchFeedFromSupabase,
   SUPABASE_URL,
+  handleLogout as supabaseLogout,
 } from './lib/supabaseClient';
 import { Database, Radio } from 'lucide-react';
 
@@ -56,7 +57,12 @@ export default function App() {
     setIsAuthModalOpen(true);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await supabaseLogout();
+    } catch (e) {
+      console.warn("Supabase sign out fallback:", e);
+    }
     setCurrentUser(null);
     saveAuthUser(null);
   };

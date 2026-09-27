@@ -354,3 +354,17 @@ export async function handleLogin(email: string, password: string, onUserAuthent
   }
 }
 
+/**
+ * دالة تسجيل الخروج عبر Supabase Auth
+ */
+export async function handleLogout() {
+  const { error } = await supabase.auth.signOut();
+  if (!error) {
+    if (typeof window !== 'undefined' && window.alert) {
+      alert("تم تسجيل الخروج بنجاح.");
+    }
+  }
+  return { error };
+}
+
+
