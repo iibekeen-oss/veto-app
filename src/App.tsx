@@ -271,7 +271,7 @@ export default function App() {
                   type="button"
                   onClick={() => setIsSettingsModalOpen(true)}
                   className="flex items-center gap-1.5 py-1 px-2 rounded-lg bg-[#1f1618] hover:bg-[#2b1c20] border border-[#FF3333]/30 text-white font-mono text-xs transition-all cursor-pointer"
-                  title={`${t.account}: ${currentUser.name}`}
+                  title={`${t.profile}: ${currentUser.name}`}
                 >
                   <span className="w-5 h-5 rounded-md bg-[#FF3333] text-black font-black text-[10px] flex items-center justify-center">
                     {currentUser.avatarInitial || currentUser.name[0]}

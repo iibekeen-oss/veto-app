@@ -9,6 +9,7 @@ export interface Translations {
   settings: string;
   language: string;
   logout: string;
+  profile: string;
 
   // Additional comprehensive UI keys
   appName: string;
@@ -55,6 +56,7 @@ export const DICTIONARY: Record<AppLanguage, Translations> = {
     settings: 'الإعدادات',
     language: 'لغة التطبيق',
     logout: 'تسجيل الخروج',
+    profile: 'الملف الشخصي',
 
     // UI translations
     appName: 'فيتو',
@@ -99,6 +101,7 @@ export const DICTIONARY: Record<AppLanguage, Translations> = {
     settings: 'Settings',
     language: 'App Language',
     logout: 'Log Out',
+    profile: 'Profile',
 
     // UI translations
     appName: 'VETO',

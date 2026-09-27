@@ -120,12 +120,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           </div>
 
-          {/* Section 2: الحساب الشخصي (User Account) */}
+          {/* Section 2: الملف الشخصي (Profile) */}
           <div className="p-4 rounded-xl bg-[#101013] border border-[#222228]">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-mono font-bold text-[#b0b0b8] flex items-center gap-2">
                 <User className="w-4 h-4 text-[#FF3333]" />
-                <span>{t.account}</span>
+                <span>{t.profile}</span>
               </span>
               {currentUser && (
                 <span className="text-[10px] font-mono text-[#00FF66] bg-[#00FF66]/10 px-2 py-0.5 rounded border border-[#00FF66]/30 flex items-center gap-1">
@@ -148,6 +148,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     <p className="text-xs text-[#8e8e93] truncate font-mono">
                       {currentUser.email}
                     </p>
+                  </div>
+                </div>
+
+                {/* Athlete Kinetic Stats */}
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#1c1c22] text-center">
+                  <div className="p-2 rounded-lg bg-[#16161b] border border-[#23232b]">
+                    <p className="text-[10px] text-[#70707c] font-mono">
+                      {isRtl ? 'الأصوات' : 'Votes'}
+                    </p>
+                    <p className="text-xs font-mono font-bold text-[#00FF66]">14</p>
+                  </div>
+                  <div className="p-2 rounded-lg bg-[#16161b] border border-[#23232b]">
+                    <p className="text-[10px] text-[#70707c] font-mono">
+                      {isRtl ? 'الردود' : 'Rebuttals'}
+                    </p>
+                    <p className="text-xs font-mono font-bold text-[#FF3333]">3</p>
+                  </div>
+                  <div className="p-2 rounded-lg bg-[#16161b] border border-[#23232b]">
+                    <p className="text-[10px] text-[#70707c] font-mono">
+                      {isRtl ? 'الدقة' : 'Accuracy'}
+                    </p>
+                    <p className="text-xs font-mono font-bold text-white">92%</p>
                   </div>
                 </div>
 
