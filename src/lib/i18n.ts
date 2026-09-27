@@ -91,10 +91,10 @@ export const DICTIONARY: Record<AppLanguage, Translations> = {
     codeInspector: 'فاحص كود كوتلن',
   },
   en: {
-    // English equivalents
-    login: 'Log In',
+    // English exact translations requested by user
+    login: 'Login',
     signup: 'Sign Up',
-    email: 'Email Address',
+    email: 'Email',
     password: 'Password',
     settings: 'Settings',
     language: 'App Language',
