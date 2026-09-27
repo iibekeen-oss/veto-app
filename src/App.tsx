@@ -254,16 +254,22 @@ export default function App() {
 
             {/* Quick Actions: Language Switcher, Auth Button, Settings Button, Rebuttal Button */}
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              {/* زر التبديل السريع في الشريط العلوي */}
-              <button
-                type="button"
-                onClick={() => changeLanguage(currentLang === 'syr' ? 'en' : 'syr')}
-                className="flex items-center gap-1.5 py-1 px-2.5 rounded-lg bg-[#1a1b20] hover:bg-[#25262e] border border-[#2a2b34] hover:border-[#00FF66]/50 text-white text-[11px] font-mono font-bold transition-all cursor-pointer shadow-sm active:scale-95"
-                title={t.language}
-              >
-                <Languages className="w-3.5 h-3.5 text-[#00FF66]" />
-                <span>{currentLang === 'syr' ? 'English' : 'السريانية'}</span>
-              </button>
+              {/* قائمة اختيار اللغة المنسدلة (select dropdown) */}
+              <div className="relative flex items-center">
+                <select
+                  id="langSelect"
+                  value={currentLang}
+                  onChange={(e) => changeLanguage(e.target.value as any)}
+                  className="py-1 px-2.5 rounded-lg bg-[#1a1b20] hover:bg-[#25262e] border border-[#2a2b34] hover:border-[#00FF66]/60 text-white text-[11px] font-mono font-bold transition-all cursor-pointer shadow-sm outline-none focus:border-[#00FF66] appearance-none pr-6 rtl:pr-2.5 rtl:pl-6 text-center"
+                  title={t.language}
+                >
+                  <option value="syr" className="bg-[#121216] text-white">السريانية</option>
+                  <option value="en" className="bg-[#121216] text-white">English</option>
+                </select>
+                <div className="pointer-events-none absolute right-2 rtl:right-auto rtl:left-2 text-[#00FF66] text-[10px]">
+                  ▼
+                </div>
+              </div>
 
               {/* User Profile / Login Button */}
               {currentUser ? (

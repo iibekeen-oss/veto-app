@@ -211,6 +211,12 @@ export function t(key: string): string {
 // تحديث النصوص في الواجهة
 export function updateUI() {
   if (typeof document !== 'undefined') {
+    // تحديث خيار القائمة المنسدلة إن وجدت
+    const langSelect = document.getElementById('langSelect') as HTMLSelectElement | null;
+    if (langSelect && langSelect.value !== currentLang) {
+      langSelect.value = currentLang;
+    }
+
     document.querySelectorAll('[data-i18n]').forEach((element) => {
       const key = element.getAttribute('data-i18n');
       if (key) {
