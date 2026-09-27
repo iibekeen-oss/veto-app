@@ -35,7 +35,7 @@ import {
 import { Database, Radio } from 'lucide-react';
 
 export default function App() {
-  const { language, setLanguage, toggleLanguage, t, isRtl } = useLanguage();
+  const { language, setLanguage, toggleLanguage, t, isRtl, currentLang, changeLanguage } = useLanguage();
   const [posts, setPosts] = useState<VetoPost[]>(INITIAL_POSTS);
   const [activeFilter, setActiveFilter] = useState<'ALL' | 'VETO_0' | 'REBUTTALS'>('ALL');
   const [activeCommentPostId, setActiveCommentPostId] = useState<string | null>(null);
@@ -254,15 +254,15 @@ export default function App() {
 
             {/* Quick Actions: Language Switcher, Auth Button, Settings Button, Rebuttal Button */}
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              {/* Language Switcher Pill (🇸🇦 / 🇺🇸) */}
+              {/* زر التبديل السريع في الشريط العلوي */}
               <button
                 type="button"
-                onClick={toggleLanguage}
-                className="flex items-center gap-1 py-1.5 px-2 rounded-lg bg-[#1a1b20] hover:bg-[#25262e] border border-[#2a2b34] text-white text-[11px] font-mono font-bold transition-all cursor-pointer shadow-sm"
+                onClick={() => changeLanguage(currentLang === 'syr' ? 'en' : 'syr')}
+                className="flex items-center gap-1.5 py-1 px-2.5 rounded-lg bg-[#1a1b20] hover:bg-[#25262e] border border-[#2a2b34] hover:border-[#00FF66]/50 text-white text-[11px] font-mono font-bold transition-all cursor-pointer shadow-sm active:scale-95"
                 title={t.language}
               >
                 <Languages className="w-3.5 h-3.5 text-[#00FF66]" />
-                <span className="uppercase">{(language === 'syr' || language === 'ar') ? '🇸🇦 ع' : '🇺🇸 EN'}</span>
+                <span>{currentLang === 'syr' ? 'English' : 'السريانية'}</span>
               </button>
 
               {/* User Profile / Login Button */}

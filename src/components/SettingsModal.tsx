@@ -73,12 +73,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <span>{t.language}</span>
               </label>
               <span className="text-[10px] font-mono text-[#00FF66] bg-[#00FF66]/10 px-2 py-0.5 rounded-md border border-[#00FF66]/20">
-                {language === 'ar' ? 'العربية نشطة' : 'English Active'}
+                {(language === 'syr' || language === 'ar') ? 'السريانية نشطة' : 'English Active'}
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-2.5">
-              {/* Arabic / Syrian Option */}
+              {/* Syrian / Arabic Option */}
               <button
                 type="button"
                 onClick={() => setLanguage('syr')}
@@ -91,7 +91,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <div className="flex items-center gap-2">
                   <span className="text-xl">🇸🇦</span>
                   <div>
-                    <p className="text-xs font-bold text-white font-sans">العربية</p>
+                    <p className="text-xs font-bold text-white font-sans">السريانية</p>
                     <p className="text-[10px] text-[#70707a] font-mono">syr / RTL</p>
                   </div>
                 </div>
