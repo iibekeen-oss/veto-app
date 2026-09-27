@@ -265,6 +265,9 @@ export default function App() {
                 >
                   <option value="syr" className="bg-[#121216] text-white">السريانية</option>
                   <option value="en" className="bg-[#121216] text-white">English</option>
+                  <option value="es" className="bg-[#121216] text-white">Español</option>
+                  <option value="fr" className="bg-[#121216] text-white">Français</option>
+                  <option value="de" className="bg-[#121216] text-white">Deutsch</option>
                 </select>
                 <div className="pointer-events-none absolute right-2 rtl:right-auto rtl:left-2 text-[#00FF66] text-[10px]">
                   ▼

@@ -10,7 +10,7 @@ export default function SettingsModal({
   onLogout,
 }: {
   currentLang?: string;
-  onLanguageChange?: (lang: 'syr' | 'en') => void;
+  onLanguageChange?: (lang: any) => void;
   onClose?: () => void;
   user?: any;
   currentUser?: any;
@@ -19,6 +19,14 @@ export default function SettingsModal({
   onLogout?: () => void;
   [key: string]: any;
 }) {
+  const languages = [
+    { code: 'syr', label: 'السريانية', sub: 'syr / RTL' },
+    { code: 'en', label: 'English', sub: 'LTR English' },
+    { code: 'es', label: 'Español', sub: 'LTR Español' },
+    { code: 'fr', label: 'Français', sub: 'LTR Français' },
+    { code: 'de', label: 'Deutsch', sub: 'LTR Deutsch' },
+  ];
+
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
       <div className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl text-white">
@@ -43,40 +51,25 @@ export default function SettingsModal({
           <div className="space-y-3">
             <label className="text-sm font-medium text-gray-300 block">لغة التطبيق</label>
             
-            <div className="grid grid-cols-2 gap-3">
-              {/* زر اللغة السريانية - نقي وخالٍ تماماً من الأعلام */}
-              <button
-                type="button"
-                onClick={() => onLanguageChange && onLanguageChange('syr')}
-                className={`p-3 rounded-xl border text-right transition-all flex flex-col justify-between cursor-pointer ${
-                  currentLang === 'syr' 
-                    ? 'border-green-500 bg-green-500/10 text-white' 
-                    : 'border-gray-800 bg-gray-800/50 text-gray-400 hover:border-gray-700'
-                }`}
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span className="font-bold text-sm">السريانية</span>
-                  {currentLang === 'syr' && <span className="text-green-500 font-bold">✓</span>}
-                </div>
-                <span className="text-xs text-gray-500 mt-2">syr / RTL</span>
-              </button>
-
-              {/* زر اللغة الإنجليزية - نقي وخالٍ تماماً من الأعلام */}
-              <button
-                type="button"
-                onClick={() => onLanguageChange && onLanguageChange('en')}
-                className={`p-3 rounded-xl border text-left transition-all flex flex-col justify-between cursor-pointer ${
-                  currentLang === 'en' 
-                    ? 'border-green-500 bg-green-500/10 text-white' 
-                    : 'border-gray-800 bg-gray-800/50 text-gray-400 hover:border-gray-700'
-                }`}
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span className="font-bold text-sm">English</span>
-                  {currentLang === 'en' && <span className="text-green-500 font-bold">✓</span>}
-                </div>
-                <span className="text-xs text-gray-500 mt-2">LTR English</span>
-              </button>
+            <div className="grid grid-cols-2 gap-2.5 max-h-56 overflow-y-auto pr-1">
+              {languages.map((item) => (
+                <button
+                  key={item.code}
+                  type="button"
+                  onClick={() => onLanguageChange && onLanguageChange(item.code)}
+                  className={`p-3 rounded-xl border text-right rtl:text-right ltr:text-left transition-all flex flex-col justify-between cursor-pointer ${
+                    currentLang === item.code 
+                      ? 'border-green-500 bg-green-500/10 text-white shadow-sm' 
+                      : 'border-gray-800 bg-gray-800/50 text-gray-400 hover:border-gray-700'
+                  }`}
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <span className="font-bold text-sm">{item.label}</span>
+                    {currentLang === item.code && <span className="text-green-500 font-bold">✓</span>}
+                  </div>
+                  <span className="text-[11px] text-gray-500 mt-1.5">{item.sub}</span>
+                </button>
+              ))}
             </div>
           </div>
 
@@ -89,7 +82,7 @@ export default function SettingsModal({
                   مرحباً بك، <span className="font-bold text-white">{user.email}</span>
                 </div>
                 {onLogout && (
-                  <button
+                  <button 
                     type="button"
                     onClick={onLogout}
                     className="w-full py-2 px-4 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-bold transition-all cursor-pointer"
