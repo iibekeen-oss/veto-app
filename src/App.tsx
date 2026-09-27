@@ -466,14 +466,18 @@ export default function App() {
         />
 
         {/* Settings Modal (Language & Profile) */}
-        <SettingsModal
-          isOpen={isSettingsModalOpen}
-          onClose={() => setIsSettingsModalOpen(false)}
-          currentUser={currentUser}
-          onOpenAuth={(mode) => handleOpenAuth(mode || 'login')}
-          onLogout={handleLogout}
-          onOpenSupabaseModal={() => setIsSupabaseModalOpen(true)}
-        />
+        {isSettingsModalOpen && (
+          <SettingsModal
+            currentLang={currentLang}
+            onLanguageChange={changeLanguage}
+            onClose={() => setIsSettingsModalOpen(false)}
+            user={currentUser}
+            onLoginClick={() => handleOpenAuth('login')}
+            onSignupClick={() => handleOpenAuth('signup')}
+            onLogout={handleLogout}
+            onOpenSupabaseModal={() => setIsSupabaseModalOpen(true)}
+          />
+        )}
       </div>
     </AndroidPhoneFrame>
   );
