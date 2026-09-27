@@ -50,21 +50,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     try {
       if (mode === 'signup') {
-        // Try Supabase signUp if available
-        try {
-          const { data, error } = await supabase.auth.signUp({
-            email: email.trim(),
-            password: password.trim(),
-          });
-          if (error && !error.message.includes('fetch')) {
-            // Log for debug
-          }
-        } catch (e) {
-          // Fallback to local session
+        const { data, error } = await supabase.auth.signUp({
+          email: email.trim(),
+          password: password.trim(),
+        });
+
+        if (error) {
+          setErrorMsg("خطأ في إنشاء الحساب: " + error.message);
+          return;
+        } else {
+          setSuccessMsg("تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني.");
         }
 
         const newUser: AuthUser = {
-          id: `u-${Date.now()}`,
+          id: data?.user?.id || `u-${Date.now()}`,
           email: email.trim(),
           name: email.split('@')[0],
           role: 'Athlete',

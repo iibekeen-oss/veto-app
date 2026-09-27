@@ -300,3 +300,32 @@ export function subscribeToStanceUpdates(
     )
     .subscribe();
 }
+
+/**
+ * دالة إنشاء حساب جديد عبر Supabase Auth
+ */
+export async function handleSignUp(email: string, password: string) {
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    });
+    if (error) {
+      if (typeof window !== 'undefined' && window.alert) {
+        alert("خطأ في إنشاء الحساب: " + error.message);
+      }
+      return { success: false, error };
+    } else {
+      if (typeof window !== 'undefined' && window.alert) {
+        alert("تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني.");
+      }
+      return { success: true, data };
+    }
+  } catch (err: any) {
+    if (typeof window !== 'undefined' && window.alert) {
+      alert("خطأ في إنشاء الحساب: " + (err?.message || 'خطأ غير معروف'));
+    }
+    return { success: false, error: err };
+  }
+}
+
