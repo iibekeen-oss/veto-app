@@ -1,0 +1,6 @@
+{
+  "name": "VETO - Dark Gym Debate App",
+  "description": "Android Jetpack Compose prototype with pitch-black dark gym theme, neon green and glowing red borders, stance counters, and interactive audience comments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
