@@ -4,20 +4,26 @@ import { createClient, RealtimeChannel } from '@supabase/supabase-js';
 const SUPABASE_URL_STORAGE_KEY = 'veto_supabase_project_url';
 const SUPABASE_KEY_STORAGE_KEY = 'veto_supabase_anon_key';
 
-// Default project configuration (يمكن استبدالهما عبر واجهة الإعدادات أو المتغيرات)
-export const DEFAULT_SUPABASE_URL = 'https://dieindvfdqpoywloccad.supabase.co';
-export const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.placeholder';
+// Default project configuration (محدد وفق رابط ومفتاح مشروعك)
+export const DEFAULT_SUPABASE_URL = 'https://dieldnvdgqoywloczad.supabase.co';
+export const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_QLbsGQdXLVZutx_vcSieJg_05ec6';
 
 export function getSavedSupabaseUrl(): string {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem(SUPABASE_URL_STORAGE_KEY) || DEFAULT_SUPABASE_URL;
+    const saved = localStorage.getItem(SUPABASE_URL_STORAGE_KEY);
+    if (saved && !saved.includes('dieindvfdqpoywloccad')) {
+      return saved;
+    }
   }
   return DEFAULT_SUPABASE_URL;
 }
 
 export function getSavedSupabaseKey(): string {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem(SUPABASE_KEY_STORAGE_KEY) || DEFAULT_SUPABASE_ANON_KEY;
+    const saved = localStorage.getItem(SUPABASE_KEY_STORAGE_KEY);
+    if (saved && !saved.includes('placeholder')) {
+      return saved;
+    }
   }
   return DEFAULT_SUPABASE_ANON_KEY;
 }
