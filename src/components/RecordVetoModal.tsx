@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { X, Flame, Video, CheckCircle, AlertCircle, Upload, Loader2, Database } from 'lucide-react';
 import { VetoPost, Stance } from '../types';
-import { insertRebuttalToSupabase, uploadRebuttalVideo } from '../lib/supabaseClient';
+import { insertRebuttalToSupabase, uploadRebuttalVideo, insertVideoToSupabase } from '../lib/supabaseClient';
 import { nutritionImg, deadliftImg } from '../assets/images';
 
 interface RecordVetoModalProps {
@@ -74,6 +74,15 @@ export const RecordVetoModal: React.FC<RecordVetoModalProps> = ({
       pro_count: 1,
       con_count: 0,
     });
+
+    // Also populate the requested 'videos' table if a video was included and user is authenticated
+    if (publicVideoUrl || videoFile) {
+      await insertVideoToSupabase({
+        title: title.trim(),
+        description: summary.trim(),
+        video_url: publicVideoUrl || undefined,
+      }).catch(() => null);
+    }
 
     const generatedId = supabaseResult.data?.id || `post-${Date.now()}`;
 

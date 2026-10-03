@@ -65,6 +65,79 @@ export interface SupabasePost {
   created_at?: string;
 }
 
+export interface VideoRecord {
+  id?: string;
+  user_id?: string;
+  title: string;
+  description?: string;
+  video_url?: string;
+  created_at?: string;
+}
+
+/**
+ * Insert video into the 'videos' table schema requested by user:
+ * create table videos (
+ *   id uuid default gen_random_uuid() primary key,
+ *   user_id uuid references auth.users not null,
+ *   title text not null,
+ *   description text,
+ *   video_url text,
+ *   created_at timestamp with time zone default timezone('utc'::text, now()) not null
+ * );
+ */
+export async function insertVideoToSupabase(video: {
+  title: string;
+  description?: string;
+  video_url?: string;
+}): Promise<{ success: boolean; data?: any; error?: string }> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return { success: false, error: 'User must be authenticated to insert video under RLS policy' };
+    }
+
+    const { data, error } = await supabase
+      .from('videos')
+      .insert([
+        {
+          user_id: user.id,
+          title: video.title,
+          description: video.description || null,
+          video_url: video.video_url || null,
+        },
+      ])
+      .select();
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data: data?.[0] };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Fetch all videos from 'videos' table (viewable by everyone under RLS policy)
+ */
+export async function fetchVideosFromSupabase(): Promise<{ success: boolean; data?: VideoRecord[]; error?: string }> {
+  try {
+    const { data, error } = await supabase
+      .from('videos')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data: data || [] };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+
 export interface StanceUpdateResult {
   success: boolean;
   pro_count: number;

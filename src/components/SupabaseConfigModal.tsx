@@ -95,6 +95,56 @@ export const SupabaseConfigModal: React.FC<SupabaseConfigModalProps> = ({
           </p>
         </div>
 
+        {/* SQL Schema Preview & Copy */}
+        <div className="p-3 rounded-xl bg-[#0c0d11] border border-[#232733] flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-mono font-bold text-[#b0b8c9] flex items-center gap-1.5">
+              <span>SQL Schema:</span>
+              <code className="text-[#3ECF8E] font-semibold">videos table & RLS</code>
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                const sql = `-- إنشاء جدول الفيديوهات
+create table videos (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users not null,
+  title text not null,
+  description text,
+  video_url text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- تفعيل الأمان (RLS)
+alter table videos enable row level security;
+
+-- السماح للجميع بقراءة الفيديوهات
+create policy "Videos are viewable by everyone" on videos for select using (true);
+
+-- السماح للمستخدمين المسجلين بإضافة فيديوهات
+create policy "Users can insert their own videos" on videos for insert with check (auth.uid() = user_id);`;
+                navigator.clipboard.writeText(sql);
+              }}
+              className="text-[11px] font-mono text-[#3ECF8E] hover:text-[#52e8a4] px-2 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 cursor-pointer transition-colors"
+            >
+              نسخ كود SQL
+            </button>
+          </div>
+          <pre className="text-[10px] font-mono text-[#788296] bg-[#08090b] p-2 rounded-lg overflow-x-auto border border-[#1b1e26] max-h-24">
+{`create table videos (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users not null,
+  title text not null,
+  description text,
+  video_url text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+alter table videos enable row level security;
+create policy "Videos are viewable by everyone" on videos for select using (true);
+create policy "Users can insert their own videos" on videos for insert with check (auth.uid() = user_id);`}
+          </pre>
+        </div>
+
         {/* Real-time Status Card */}
         <div className="p-3 rounded-xl bg-[#1a1c24] border border-[#2d3240] text-xs font-mono flex items-center justify-between">
           <div className="flex items-center gap-2">
