@@ -314,7 +314,7 @@ export default function App() {
                   title={t.login}
                 >
                   <LogIn className="w-3.5 h-3.5" />
-                  <span className="hidden xs:inline">{t.login}</span>
+                  <span className="inline">{t.login}</span>
                 </button>
               )}
 
