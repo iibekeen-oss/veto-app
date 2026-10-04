@@ -7,7 +7,7 @@ const SUPABASE_KEY_STORAGE_KEY = 'veto_supabase_anon_key';
 // Default project configuration (الرابط والمفتاح الرسميان لمشروع VETO)
 // ✅ Verified active in Supabase dashboard -> Project Settings -> API -> Project URL
 export const DEFAULT_SUPABASE_URL = 'https://dieldnvdgqoywloczad.supabase.co';
-export const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_QLbsGQdXLVZutx_vcSieJg_05ec6';
+export const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
 
 // Legacy / mistyped URLs that must never be used (force fallback to the correct default)
 const LEGACY_BAD_URL_FRAGMENTS = ['dieindvfdqpoywloccad'];
