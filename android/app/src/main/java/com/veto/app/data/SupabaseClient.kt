@@ -17,14 +17,14 @@ import kotlinx.serialization.Serializable
 
 /**
  * Supabase client configuration for VETO:
- * Project URL: https://dieindvfdqpoywloccad.supabase.co
+ * Project URL: https://dieldnvdgqoywloczad.supabase.co
  * Connected to Real-time stance counters: pro_count and con_count
  * Storage Bucket: rebuttals
  */
 object SupabaseConfig {
-    const val SUPABASE_URL = "https://dieindvfdqpoywloccad.supabase.co"
-    // Insert your full Publishable / Anon key here or configure via BuildConfig/Env
-    var supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.placeholder"
+    const val SUPABASE_URL = "https://dieldnvdgqoywloczad.supabase.co"
+    // Publishable / Anon key (matches DEFAULT_SUPABASE_ANON_KEY in the web client)
+    var supabaseKey = "sb_publishable_QLbsGQdXLVZutx_vcSieJg_05ec6"
 
     val client: SupabaseClient by lazy {
         createSupabaseClient(

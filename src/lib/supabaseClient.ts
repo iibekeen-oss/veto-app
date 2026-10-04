@@ -4,15 +4,25 @@ import { createClient, RealtimeChannel } from '@supabase/supabase-js';
 const SUPABASE_URL_STORAGE_KEY = 'veto_supabase_project_url';
 const SUPABASE_KEY_STORAGE_KEY = 'veto_supabase_anon_key';
 
-// Default project configuration (محدد وفق رابط ومفتاح مشروعك)
+// Default project configuration (الرابط والمفتاح الرسميان لمشروع VETO)
+// ✅ Verified active in Supabase dashboard -> Project Settings -> API -> Project URL
 export const DEFAULT_SUPABASE_URL = 'https://dieldnvdgqoywloczad.supabase.co';
 export const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_QLbsGQdXLVZutx_vcSieJg_05ec6';
+
+// Legacy / mistyped URLs that must never be used (force fallback to the correct default)
+const LEGACY_BAD_URL_FRAGMENTS = ['dieindvfdqpoywloccad'];
 
 export function getSavedSupabaseUrl(): string {
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem(SUPABASE_URL_STORAGE_KEY);
-    if (saved && !saved.includes('dieindvfdqpoywloccad')) {
+    const isLegacyBadUrl =
+      !!saved && LEGACY_BAD_URL_FRAGMENTS.some((frag) => saved.includes(frag));
+    if (saved && !isLegacyBadUrl && saved.includes('.supabase.co')) {
       return saved;
+    }
+    // Purge any stale/incorrect value so the correct default is always used
+    if (saved && (isLegacyBadUrl || !saved.includes('.supabase.co'))) {
+      localStorage.removeItem(SUPABASE_URL_STORAGE_KEY);
     }
   }
   return DEFAULT_SUPABASE_URL;

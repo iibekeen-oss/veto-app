@@ -200,7 +200,7 @@ dependencies {
     name: 'SupabaseClient.kt',
     path: 'com/veto/app/data/SupabaseClient.kt',
     lang: 'kotlin',
-    description: 'Supabase Kotlin SDK configuration for https://dieindvfdqpoywloccad.supabase.co, real-time pro_count and con_count flows, and rebuttal inserts',
+    description: 'Supabase Kotlin SDK configuration for https://dieldnvdgqoywloczad.supabase.co, real-time pro_count and con_count flows, and rebuttal inserts',
     code: `package com.veto.app.data
 
 import io.github.jan.supabase.SupabaseClient
@@ -218,13 +218,13 @@ import kotlinx.serialization.Serializable
 
 /**
  * Supabase client configuration for VETO:
- * Project URL: https://dieindvfdqpoywloccad.supabase.co
+ * Project URL: https://dieldnvdgqoywloczad.supabase.co
  * Connected to Real-time stance counters: pro_count and con_count
  */
 object SupabaseConfig {
-    const val SUPABASE_URL = "https://dieindvfdqpoywloccad.supabase.co"
-    // Insert your full Publishable / Anon key here:
-    var supabaseKey = "[قم بلصق المفتاح الكامل هنا]"
+    const val SUPABASE_URL = "https://dieldnvdgqoywloczad.supabase.co"
+    // Publishable / Anon key (matches DEFAULT_SUPABASE_ANON_KEY in the web client):
+    var supabaseKey = "sb_publishable_QLbsGQdXLVZutx_vcSieJg_05ec6"
 
     val client: SupabaseClient by lazy {
         createSupabaseClient(
