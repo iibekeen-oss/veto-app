@@ -48,7 +48,7 @@ export const RecordVetoModal: React.FC<RecordVetoModalProps> = ({
 
     let publicVideoUrl = '';
 
-    // 1. Upload video to Supabase Storage bucket 'rebuttals' if file selected
+    // 1. Upload video to Supabase Storage bucket 'videos' if file selected
     if (videoFile) {
       const uploadRes = await uploadRebuttalVideo(videoFile);
       if (uploadRes.url) {
@@ -229,7 +229,7 @@ export const RecordVetoModal: React.FC<RecordVetoModalProps> = ({
 
             <div>
               <label className="block text-xs font-bold text-[#b0b0b0] uppercase font-mono mb-1.5">
-                Video Storage (Bucket: 'rebuttals')
+                Video Storage (Bucket: 'videos')
               </label>
               <input
                 type="file"

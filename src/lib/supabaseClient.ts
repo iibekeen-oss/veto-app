@@ -158,19 +158,21 @@ export interface RebuttalInsertPayload {
 }
 
 /**
- * Upload video file to Supabase Storage bucket 'rebuttals'
+ * Upload video file to Supabase Storage bucket 'videos'
  */
 export async function uploadRebuttalVideo(file: File): Promise<{ success: boolean; url?: string; error?: string }> {
   try {
     const fileExt = file.name.split('.').pop() || 'mp4';
     const fileName = `rebuttal_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
-    const filePath = `videos/${fileName}`;
+    // The bucket itself is named 'videos', so the object path is just the filename.
+    const filePath = fileName;
 
     const { error: uploadError } = await supabase.storage
-      .from('rebuttals')
+      .from('videos')
       .upload(filePath, file, {
         cacheControl: '3600',
-        upsert: false,
+        upsert: true,
+        contentType: file.type || 'video/mp4',
       });
 
     if (uploadError) {
@@ -180,7 +182,7 @@ export async function uploadRebuttalVideo(file: File): Promise<{ success: boolea
     }
 
     const { data: publicData } = supabase.storage
-      .from('rebuttals')
+      .from('videos')
       .getPublicUrl(filePath);
 
     return {
