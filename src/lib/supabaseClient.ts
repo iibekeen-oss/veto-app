@@ -7,7 +7,7 @@ const SUPABASE_KEY_STORAGE_KEY = 'veto_supabase_anon_key';
 // Default project configuration (الرابط والمفتاح الرسميان لمشروع VETO)
 // ✅ Verified active in Supabase dashboard -> Project Settings -> API -> Project URL
 export const DEFAULT_SUPABASE_URL = 'https://ykoxoafqdgpnqrdkyme.supabase.co';
-export const DEFAULT_SUPABASE_ANON_KEY = 'eyJ...';
+export const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_EB_rTfmgBLjdqo7nnNUAuw_JR0wwqS-';
 
 // Legacy / mistyped URLs that must never be used (force fallback to the correct default)
 const LEGACY_BAD_URL_FRAGMENTS = ['dieindvfdqpoywloccad'];
@@ -167,41 +167,89 @@ export interface RebuttalInsertPayload {
   con_count?: number;
 }
 
-/**
- * Upload video file to Supabase Storage bucket 'videos'
- */
-export async function uploadRebuttalVideo(file: File): Promise<{ success: boolean; url?: string; error?: string }> {
-  try {
-    const fileExt = file.name.split('.').pop() || 'mp4';
-    const fileName = `rebuttal_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
-    // The bucket itself is named 'videos', so the object path is just the filename.
-    const filePath = fileName;
+const MAX_VIDEO_BYTES = 100 * 1024 * 1024; // 100 MB – match your bucket limit
 
+/** Extract a readable error message from an unknown thrown value. */
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === 'string') return err;
+  return 'Unknown upload error.';
+}
+
+/**
+ * Upload a video file to the Supabase Storage bucket 'videos'.
+ *
+ * Progress is COARSE: `onProgress` fires only with 0 (start) and 100 (done),
+ * because the Supabase JS SDK's `storage.upload()` does not emit byte-level
+ * progress events. We intentionally do NOT fall back to a `blob:` object URL on
+ * failure, since such a URL is useless once persisted to the database.
+ */
+export async function uploadRebuttalVideo(
+  file: File,
+  onProgress?: (progress: number) => void,
+  options?: { signal?: AbortSignal }
+): Promise<{ success: boolean; url?: string; error?: string }> {
+  try {
+    // 1. Validate the file before touching the network.
+    if (!file) {
+      return { success: false, error: 'No file provided.' };
+    }
+    if (!file.type.startsWith('video/')) {
+      return { success: false, error: 'Only video files are allowed.' };
+    }
+    if (file.size === 0) {
+      return { success: false, error: 'The selected file is empty.' };
+    }
+    if (file.size > MAX_VIDEO_BYTES) {
+      return {
+        success: false,
+        error: `Video is too large (max ${Math.round(MAX_VIDEO_BYTES / 1024 / 1024)} MB).`,
+      };
+    }
+
+    // 2. Authenticate (bucket policy requires an authenticated user).
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return { success: false, error: 'User must be authenticated to upload videos.' };
+    }
+
+    // 3. Build a collision-proof path. Extension comes from the MIME type,
+    //    falling back to the filename only if needed.
+    const ext =
+      file.type.split('/')[1]?.split('+')[0] ||
+      file.name.split('.').pop()?.toLowerCase() ||
+      'mp4';
+    const uniqueSuffix =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : Math.random().toString(36).substring(2, 8);
+    const filePath = `${user.id}/${Date.now()}-${uniqueSuffix}.${ext}`;
+
+    onProgress?.(0);
+
+    // 4. Upload. `upsert` is unnecessary now that the path is unique.
     const { error: uploadError } = await supabase.storage
       .from('videos')
       .upload(filePath, file, {
         cacheControl: '3600',
-        upsert: true,
         contentType: file.type || 'video/mp4',
+        signal: options?.signal,
       });
 
     if (uploadError) {
-      console.warn('Supabase storage upload error:', uploadError.message);
-      // Fallback object URL
-      return { success: false, url: URL.createObjectURL(file), error: uploadError.message };
+      return { success: false, error: uploadError.message };
     }
 
+    onProgress?.(100);
+
+    // 5. Public URL is computed synchronously and cannot fail.
     const { data: publicData } = supabase.storage
       .from('videos')
       .getPublicUrl(filePath);
 
-    return {
-      success: true,
-      url: publicData?.publicUrl || URL.createObjectURL(file),
-    };
-  } catch (err: any) {
-    console.warn('Storage upload fallback:', err.message);
-    return { success: false, url: URL.createObjectURL(file), error: err.message };
+    return { success: true, url: publicData.publicUrl };
+  } catch (err: unknown) {
+    return { success: false, error: getErrorMessage(err) };
   }
 }
 
